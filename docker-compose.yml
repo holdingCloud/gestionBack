@@ -1,0 +1,47 @@
+version: '3.8'
+
+
+services:
+
+  app:
+    depends_on:
+      - mysql 
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
+      
+    volumes:
+      - .:/app/
+      - /app/node_modules
+
+    container_name: prueba_luciano
+    ports:
+      - ${PORT}:${PORT}
+    environment:
+      APP_VERSION: ${APP_VERSION}
+      PORT: ${PORT}
+      HOST_API: ${HOST_API}
+      PUBLIC_PATH: ${PUBLIC_PATH}
+      MYSQL_URL: ${MYSQL_URL}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      JWT_SEED: ${JWT_SEED}
+      
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    container_name: mysql_DB
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ./mysql:/var/lib/msql
+    ports:
+      - 3306:3306
+
+volumes:
+  mysql:
+    external: false
